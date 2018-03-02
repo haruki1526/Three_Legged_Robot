@@ -11,11 +11,11 @@ class inverse_kinematics{
 	public:
 
 
-		void theta1_calculater(double y, double z);
+		double theta1_calculater(double y, double z);
 
-		void theta2_calculater(double x, double z);
+		double theta2_calculater(double x, double z);
 		
-		void theta3_calculater(double x, double z);
+		double theta3_calculater(double x, double z);
 
 
 	private:
@@ -31,7 +31,8 @@ class inverse_kinematics{
 class control{
 	public:
 
-		void command(double x, double y, double z);
+		void command(double position[3][3]);
+
 
 	private:
 
@@ -71,15 +72,17 @@ double inverse_kinematics::theta3_calculater(double x, double z){
 	return theta3;
 }
 
-void control::command(double position[]){
-	
+void control::command(double position[3][3]){
 
-	Inverse_kinematics.theta1_calculater(y, z);
 
-	Inverse_kinematics.theta2_calculater(x, z);
+	int i;
+	for( i=0; i<3; i++){
+		printf("theta1=%lf\n",Inverse_kinematics.theta1_calculater(position[i][1], position[i][2]));
 
-	Inverse_kinematics.theta3_calculater(x, z);
+		printf("theta2=%lf\n",Inverse_kinematics.theta2_calculater(position[i][0], position[i][2]));
 
+		printf("theta3=%lf\n",Inverse_kinematics.theta3_calculater(position[i][0], position[i][2]));
+	}
 
 }
 
@@ -92,21 +95,16 @@ int main(int argc, char **argv){
 //	ros::init(argc, argv, "robo_controller");
 
 
-	control right;
+	control legg;
 
-	control left;
-
-	control center;
-
-	double position[10];
+	double position[3][3]={{0, 0, 0.15294},     //0.1366025 0.088012, 0.15294
+			       {0.1366025, 0.088012, 0.15294},  
+			       {0.1366025, 0.088012, 0.15294}};
 
 	while(1){	
 
-		right.command(0.1366025, 0.088012, 0.15294);
+		legg.command(position);
 
-		left.command(0.1366025, 0.088012, 0.15294);
-
-		center.command(0.1366025, 0.088012, 0.15294);
 	}
 
 
