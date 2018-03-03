@@ -1,7 +1,8 @@
-//#include <ros/ros.h>
+#include <ros/ros.h>
 #include <stdio.h>
 #include <cmath>
 #include <iostream>
+#include <robo_state/robo_command.h>
 
 #define L1 0.04
 #define L2 0.1
@@ -38,9 +39,14 @@ class control{
 
 		inverse_kinematics Inverse_kinematics;		
 
-//		ros::Publisher pub;
+		
+		robo_state::robo_command commander;
 
-//		robo_state::robo_command commander;
+		ros::NodeHandle node;
+
+		
+		ros::Publisher pub= node.advertise<robo_state::robo_command>("position_command",1);
+
 
 
 };
@@ -77,12 +83,17 @@ void control::command(double position[3][3]){
 
 	int i;
 	for( i=0; i<3; i++){
-		printf("theta1=%lf\n",Inverse_kinematics.theta1_calculater(position[i][1], position[i][2]));
 
-		printf("theta2=%lf\n",Inverse_kinematics.theta2_calculater(position[i][0], position[i][2]));
+		commander.theta.push_back(Inverse_kinematics.theta1_calculater(position[i][1], position[i][2]));
 
-		printf("theta3=%lf\n",Inverse_kinematics.theta3_calculater(position[i][0], position[i][2]));
+		commander.theta.push_back(Inverse_kinematics.theta2_calculater(position[i][0], position[i][2]));
+
+		commander.theta.push_back(Inverse_kinematics.theta3_calculater(position[i][0], position[i][2]));
 	}
+
+
+	pub.publish(commander);
+	commander.theta.clear();
 
 }
 
@@ -90,9 +101,8 @@ void control::command(double position[3][3]){
 int main(int argc, char **argv){
 
 
-//	ros::nodehandle node;
-	
-//	ros::init(argc, argv, "robo_controller");
+		
+	ros::init(argc, argv, "robo_controller");
 
 
 	control legg;
@@ -101,9 +111,12 @@ int main(int argc, char **argv){
 			       {0.1366025, 0.088012, 0.15294},  
 			       {0.1366025, 0.088012, 0.15294}};
 
-	while(1){	
+
+	ros::Rate rate(1);
+	while(ros::ok()){	
 
 		legg.command(position);
+		rate.sleep();
 
 	}
 
