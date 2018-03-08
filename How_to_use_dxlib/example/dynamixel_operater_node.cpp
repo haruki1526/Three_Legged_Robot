@@ -1,5 +1,4 @@
 /*
-
   PINGでネットワーク上の対象を検索
 
   ターゲット:BAUD=1Mの機器
@@ -18,28 +17,13 @@
 
 class command_execute{
 public:
-	void receive(const robo_state::robo_command &commander){
-
-		for(int i=0; i<MAX_ID; i++){
-			position[i]=commander.theta[i];
-		}
-
-		for(int i=0;i<MAX_ID;i++){
-			DX_WriteWordData(dev, i, 32, velocity[i], &err);    
-		
-	   		DX_WriteWordData(dev, i, 30, position[i], &err);     
-		}
-
-
-	}
+	void receive(const robo_state::robo_command &commander);
 	
 
 
 	~command_execute();
 	
 	command_execute(){
-		node.subscribe("position_command",100, receive,this);
-	
 		if ((dev = DX_OpenPort (COMPORT, BAUDRATE))) {
     			printf ("Open success\n");
 
@@ -48,12 +32,14 @@ public:
     		TDxAlarmStatus stat[253];
     		if (DX_Ping2 (dev, &num, stat, &err)) {
       			for (i = 0; i < num; i++)
-    		   	 	printf ("Found ID=%d %02X\n", stat[i].id, stat[i].Status);
+    		   	 	printf("Found ID=%d %02X\n", stat[i].id, stat[i].Status);
    	 	}
 	
 		}else{
 			printf("Open error\n");
 		}
+
+
 
 	}
 
@@ -66,17 +52,34 @@ private:
 	uint16_t position[MAX_ID];
 	uint16_t velocity[MAX_ID]={50,50,50,50,50,50,50,50,50};
 
-	ros::NodeHandle node;
 
-	ros::Subscriber sub;	
 	TDeviceID  dev;
   	TErrorCode  err;
 
+	ros::NodeHandle node;
+	ros::Subscriber sub = node.subscribe("position_command",100, &command_execute::receive,this);
 };
 
 
 
 
+
+
+void command_execute::receive(const robo_state::robo_command &commander){
+
+		for(int i=0; i<MAX_ID; i++){
+			position[i]=195.5766*(M_PI+commander.theta[i])-102.4;
+
+		}
+
+		for(int i=0;i<MAX_ID;i++){
+			//printf("id=%d pos=%d  ",(uint8_t)i+1, (uint16_t)position[i]);	
+			DX_WriteWordData(dev, (uint8_t)i+1, 32, (uint16_t)velocity[i], &err);    
+		
+	   		DX_WriteWordData(dev, (uint8_t)i+1, 30, (uint16_t)position[i], &err);     
+		}
+}
+	
 
 	
 command_execute::~command_execute(){
@@ -91,3 +94,6 @@ int main (int argc, char **argv){
 
 	ros::spin();
 }
+
+
+
