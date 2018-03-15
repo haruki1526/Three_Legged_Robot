@@ -45,14 +45,14 @@ class control{
 		ros::NodeHandle node;
 
 		
-		ros::Publisher pub= node.advertise<robo_state::robo_command>("position_command",1);
+		ros::Publisher pub= node.advertise<robo_state::robo_command>("position_command",5);
 
 
 
 };
 
 
-double inverse_kinematics::theta1_calculater(double y, double z){
+inline	double inverse_kinematics::theta1_calculater(double y, double z){
 
 
 	theta1=std::atan2(y, z);
@@ -61,7 +61,7 @@ double inverse_kinematics::theta1_calculater(double y, double z){
 
 }
 
-double inverse_kinematics::theta2_calculater(double x, double z){
+inline	double inverse_kinematics::theta2_calculater(double x, double z){
 
 	theta2=std::atan2(x, (z-L1*std::cos(theta1))/(std::cos(theta1)))- 
 	std::acos((L2*L2+x*x+std::pow( (z-L1*std::cos(theta1))/(std::cos(theta1)), 2) -L3*L3)/(2*L2*std::sqrt(x*x+pow( (z-L1*std::cos(theta1))/(std::cos(theta1)), 2) )));
@@ -69,7 +69,7 @@ double inverse_kinematics::theta2_calculater(double x, double z){
 	return theta2;
 }
 
-double inverse_kinematics::theta3_calculater(double x, double z){
+inline	double inverse_kinematics::theta3_calculater(double x, double z){
 
 
 	theta3=std::acos((L2*L2+x*x+std::pow( (z-L1*std::cos(theta1))/(std::cos(theta1)), 2) -L3*L3)/(2*L2*sqrt(x*x+std::pow( (z-L1*std::cos(theta1))/(std::cos(theta1)), 2) ))) + 
@@ -107,12 +107,12 @@ int main(int argc, char **argv){
 
 	control legg;
 
-	double position[3][3]={{0, 0, 0.15294},     //0.1366025 0.088012, 0.15294
-			       {0.1366025, 0.088012, 0.15294},  
-			       {0.1366025, 0.088012, 0.15294}};
+	double position[3][3]={{-0.03, 0, 0.2},     //0.1366025 0.088012, 0.15294
+			       {-0.03, 0, 0.2},  
+			       {-0.03, 0, 0.2}};
 
 
-	ros::Rate rate(1);
+	ros::Rate rate(1000);
 	while(ros::ok()){	
 
 		legg.command(position);

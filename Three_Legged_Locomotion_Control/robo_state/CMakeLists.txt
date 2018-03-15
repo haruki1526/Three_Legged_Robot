@@ -52,6 +52,7 @@ find_package(catkin REQUIRED COMPONENTS
    point.msg
    theta.msg
    robo_command.msg
+   state.msg
  )
 
 ## Generate services in the 'srv' folder
