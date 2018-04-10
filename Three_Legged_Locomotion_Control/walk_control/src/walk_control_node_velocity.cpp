@@ -34,6 +34,7 @@ class control{
 
 		void command(double position[3][3]);
 
+		void EndlessTurnMode
 
 
 	private:
@@ -47,7 +48,6 @@ class control{
 
 		
 		ros::Publisher pub= node.advertise<robo_state::robo_command>("position_command",5);
-
 
 
 
@@ -115,9 +115,12 @@ int main(int argc, char **argv){
 
 
 	ros::Rate rate(1000);
-	while(ros::ok()){	
+	while(ros::ok()){
 
-		legg.command(position);
+		
+
+
+
 		rate.sleep();
 
 	}

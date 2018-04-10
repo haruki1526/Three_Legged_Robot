@@ -35,7 +35,6 @@ class control{
 		void command(double position[3][3]);
 
 
-
 	private:
 
 		inverse_kinematics Inverse_kinematics;		
@@ -47,7 +46,6 @@ class control{
 
 		
 		ros::Publisher pub= node.advertise<robo_state::robo_command>("position_command",5);
-
 
 
 

@@ -1,0 +1,7 @@
+<launch>
+	<node pkg="walk_control" name="walk_control_node" type="walk_control_node"/>
+	<node pkg="dynamixel_operation" name="dynamixel_operation_node" type="dynamixel_operation_node" output="screen"/>
+
+
+
+</launch>
